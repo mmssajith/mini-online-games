@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { showLeaderboardUI, addLeaderboardButton } from '../shared/leaderboard-ui.js';
 
 const GRID_COLS = 10;
 const GRID_ROWS = 12;
@@ -42,6 +43,7 @@ class BubblePopScene extends Phaser.Scene {
         this.add.text(WIDTH / 2, 16, 'BUBBLE POP', { fontSize: '22px', fill: '#4facfe', fontFamily: 'sans-serif' }).setOrigin(0.5);
         this.scoreText = this.add.text(16, 40, 'Score: 0', { fontSize: '16px', fill: '#fff', fontFamily: 'sans-serif' });
         this.movesText = this.add.text(WIDTH - 16, 40, 'Moves: 30', { fontSize: '16px', fill: '#ffe44d', fontFamily: 'sans-serif' }).setOrigin(1, 0);
+        addLeaderboardButton(this, 'bubble-pop', WIDTH / 2, 42);
         this.comboText = this.add.text(WIDTH / 2, HEIGHT / 2, '', { fontSize: '36px', fill: '#fff', fontFamily: 'sans-serif' }).setOrigin(0.5).setAlpha(0);
 
         for (let r = 0; r < GRID_ROWS; r++) {
@@ -214,11 +216,9 @@ class BubblePopScene extends Phaser.Scene {
 
     showGameOver() {
         this.isAnimating = true;
-        this.add.rectangle(WIDTH / 2, HEIGHT / 2, 320, 200, 0x000000, 0.85).setOrigin(0.5);
-        this.add.text(WIDTH / 2, HEIGHT / 2 - 50, 'NO MOVES LEFT', { fontSize: '28px', fill: '#f77062', fontFamily: 'sans-serif' }).setOrigin(0.5);
-        this.add.text(WIDTH / 2, HEIGHT / 2 - 10, 'Final Score: ' + this.score, { fontSize: '22px', fill: '#fff', fontFamily: 'sans-serif' }).setOrigin(0.5);
-        const restart = this.add.text(WIDTH / 2, HEIGHT / 2 + 40, 'Play Again', { fontSize: '22px', fill: '#4facfe', fontFamily: 'sans-serif', backgroundColor: '#162840', padding: { x: 20, y: 8 } }).setOrigin(0.5).setInteractive();
-        restart.on('pointerdown', () => this.initGame());
+        showLeaderboardUI(this, 'bubble-pop', this.score, {
+            onRestart: () => this.initGame(),
+        });
     }
 }
 

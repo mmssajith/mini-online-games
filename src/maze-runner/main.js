@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { showLeaderboardUI, addLeaderboardButton } from '../shared/leaderboard-ui.js';
 
 const CELL = 40;
 const COLS = 19;
@@ -111,6 +112,7 @@ class MazeRunnerScene extends Phaser.Scene {
         this.timerText = this.add.text(WIDTH - 16, 36, 'Time: ' + this.timeLeft + 's', { fontSize: '16px', fill: '#fff', fontFamily: 'sans-serif' }).setOrigin(1, 0);
         this.bestText = this.add.text(WIDTH / 2, 36, this.bestTime === Infinity ? '' : 'Best: ' + this.bestTime + 's', { fontSize: '16px', fill: '#00ff88', fontFamily: 'sans-serif' }).setOrigin(0.5, 0);
         this.add.text(WIDTH / 2, HEIGHT - 20, 'Use Arrow Keys or WASD to move', { fontSize: '13px', fill: '#666', fontFamily: 'sans-serif' }).setOrigin(0.5);
+        addLeaderboardButton(this, 'maze-runner', WIDTH - 16, 16);
 
         // Timer
         if (this.timerEvent) this.timerEvent.remove();
@@ -176,12 +178,18 @@ class MazeRunnerScene extends Phaser.Scene {
             next.on('pointerover', () => next.setStyle({ fill: '#00f2fe' }));
             next.on('pointerout', () => next.setStyle({ fill: '#4facfe' }));
         } else {
-            this.add.text(WIDTH / 2, HEIGHT / 2 - 50, "TIME'S UP!", { fontSize: '36px', fill: '#f77062', fontFamily: 'sans-serif' }).setOrigin(0.5);
-            this.add.text(WIDTH / 2, HEIGHT / 2, 'Reached Level ' + this.level, { fontSize: '22px', fill: '#fff', fontFamily: 'sans-serif' }).setOrigin(0.5);
-            const restart = this.add.text(WIDTH / 2, HEIGHT / 2 + 50, 'Try Again', { fontSize: '22px', fill: '#4facfe', fontFamily: 'sans-serif', backgroundColor: '#1a1a3e', padding: { x: 20, y: 8 } }).setOrigin(0.5).setInteractive();
-            restart.on('pointerdown', () => { this.level = 1; this.bestTime = Infinity; this.startLevel(); });
-            restart.on('pointerover', () => restart.setStyle({ fill: '#00f2fe' }));
-            restart.on('pointerout', () => restart.setStyle({ fill: '#4facfe' }));
+            if (this.bestTime !== Infinity) {
+                showLeaderboardUI(this, 'maze-runner', this.bestTime, {
+                    onRestart: () => { this.level = 1; this.bestTime = Infinity; this.startLevel(); },
+                });
+            } else {
+                this.add.text(WIDTH / 2, HEIGHT / 2 - 50, "TIME'S UP!", { fontSize: '36px', fill: '#f77062', fontFamily: 'sans-serif' }).setOrigin(0.5);
+                this.add.text(WIDTH / 2, HEIGHT / 2, 'Reached Level ' + this.level, { fontSize: '22px', fill: '#fff', fontFamily: 'sans-serif' }).setOrigin(0.5);
+                const restart = this.add.text(WIDTH / 2, HEIGHT / 2 + 50, 'Try Again', { fontSize: '22px', fill: '#4facfe', fontFamily: 'sans-serif', backgroundColor: '#1a1a3e', padding: { x: 20, y: 8 } }).setOrigin(0.5).setInteractive();
+                restart.on('pointerdown', () => { this.level = 1; this.bestTime = Infinity; this.startLevel(); });
+                restart.on('pointerover', () => restart.setStyle({ fill: '#00f2fe' }));
+                restart.on('pointerout', () => restart.setStyle({ fill: '#4facfe' }));
+            }
         }
     }
 }

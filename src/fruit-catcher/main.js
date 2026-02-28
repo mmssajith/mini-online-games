@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { showLeaderboardUI, addLeaderboardButton } from '../shared/leaderboard-ui.js';
 
 const FRUIT_COLORS = [
     { color: 0xff0000, name: 'apple', points: 10 },
@@ -103,6 +104,7 @@ class FruitCatcherScene extends Phaser.Scene {
         this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '22px', fill: '#fff', fontFamily: 'sans-serif', stroke: '#000', strokeThickness: 2 });
         this.livesText = this.add.text(16, 44, 'Lives: 3', { fontSize: '22px', fill: '#ff4444', fontFamily: 'sans-serif', stroke: '#000', strokeThickness: 2 });
         this.levelText = this.add.text(700, 16, 'Level 1', { fontSize: '22px', fill: '#ffe44d', fontFamily: 'sans-serif', stroke: '#000', strokeThickness: 2 });
+        addLeaderboardButton(this, 'fruit-catcher', 780, 16);
     }
 
     update(time) {
@@ -176,12 +178,7 @@ class FruitCatcherScene extends Phaser.Scene {
         if (this.lives <= 0) {
             this.gameOver = true;
             this.physics.pause();
-            this.add.rectangle(400, 300, 400, 250, 0x000000, 0.8).setOrigin(0.5);
-            this.add.text(400, 240, 'GAME OVER', { fontSize: '42px', fill: '#f77062', fontFamily: 'sans-serif' }).setOrigin(0.5);
-            this.add.text(400, 290, 'Score: ' + this.score, { fontSize: '26px', fill: '#fff', fontFamily: 'sans-serif' }).setOrigin(0.5);
-            this.add.text(400, 325, 'Level: ' + this.level, { fontSize: '20px', fill: '#ffe44d', fontFamily: 'sans-serif' }).setOrigin(0.5);
-            const restart = this.add.text(400, 370, 'Click to Restart', { fontSize: '20px', fill: '#4facfe', fontFamily: 'sans-serif' }).setOrigin(0.5).setInteractive();
-            restart.on('pointerdown', () => this.scene.restart());
+            showLeaderboardUI(this, 'fruit-catcher', this.score);
         }
     }
 }

@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { showLeaderboardUI, addLeaderboardButton } from '../shared/leaderboard-ui.js';
 
 const ASSET_BASE = 'assets/';
 
@@ -123,6 +124,7 @@ class AsteroidBlasterScene extends Phaser.Scene {
         this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '20px', fill: '#4facfe', fontFamily: 'sans-serif' }).setDepth(5);
         this.livesText = this.add.text(16, 42, 'Lives: 3', { fontSize: '20px', fill: '#f77062', fontFamily: 'sans-serif' }).setDepth(5);
         this.levelText = this.add.text(784, 16, 'Level: 1', { fontSize: '20px', fill: '#00ff88', fontFamily: 'sans-serif' }).setOrigin(1, 0).setDepth(5);
+        addLeaderboardButton(this, 'asteroid-blaster', 784, 46);
     }
 
     update(time) {
@@ -386,10 +388,7 @@ class AsteroidBlasterScene extends Phaser.Scene {
 
             // Ship stays visible and on fire — game over UI appears on top
             this.time.delayedCall(800, () => {
-                this.add.text(400, 260, 'GAME OVER', { fontSize: '48px', fill: '#f77062', fontFamily: 'sans-serif' }).setOrigin(0.5).setDepth(10);
-                this.add.text(400, 320, 'Score: ' + this.score, { fontSize: '28px', fill: '#fff', fontFamily: 'sans-serif' }).setOrigin(0.5).setDepth(10);
-                const restart = this.add.text(400, 370, 'Click to Restart', { fontSize: '20px', fill: '#4facfe', fontFamily: 'sans-serif' }).setOrigin(0.5).setInteractive().setDepth(10);
-                restart.on('pointerdown', () => this.scene.restart());
+                showLeaderboardUI(this, 'asteroid-blaster', this.score);
             });
         } else {
             // Invulnerability period — ship blinks

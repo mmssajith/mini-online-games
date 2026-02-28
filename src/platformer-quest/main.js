@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { showLeaderboardUI, addLeaderboardButton } from '../shared/leaderboard-ui.js';
 
 const LEVELS = [
     {
@@ -214,6 +215,7 @@ class PlatformerScene extends Phaser.Scene {
         this.scoreText = this.add.text(16, 16, 'Score: ' + this.score, { fontSize: '18px', fill: '#fff', fontFamily: 'sans-serif', stroke: '#000', strokeThickness: 3 });
         this.levelText = this.add.text(400, 16, 'Level ' + (levelIdx + 1), { fontSize: '18px', fill: '#ffe44d', fontFamily: 'sans-serif', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5, 0);
         this.coinsText = this.add.text(784, 16, 'Coins: 0/' + this.totalCoins, { fontSize: '18px', fill: '#ffd700', fontFamily: 'sans-serif', stroke: '#000', strokeThickness: 3 }).setOrigin(1, 0);
+        addLeaderboardButton(this, 'platformer-quest', 784, 42);
         this.add.text(400, 485, 'Arrow Keys to move, Up to jump', { fontSize: '12px', fill: '#fff', fontFamily: 'sans-serif', stroke: '#000', strokeThickness: 2 }).setOrigin(0.5);
     }
 
@@ -288,14 +290,11 @@ class PlatformerScene extends Phaser.Scene {
         }
         this.player.setVisible(false);
 
-        this.add.rectangle(400, 250, 350, 180, 0x000000, 0.8).setOrigin(0.5);
-        this.add.text(400, 200, 'YOU DIED!', { fontSize: '36px', fill: '#f77062', fontFamily: 'sans-serif' }).setOrigin(0.5);
-        this.add.text(400, 240, 'Score: ' + this.score, { fontSize: '20px', fill: '#fff', fontFamily: 'sans-serif' }).setOrigin(0.5);
-
-        const retry = this.add.text(400, 290, 'Try Again', { fontSize: '20px', fill: '#4facfe', fontFamily: 'sans-serif', backgroundColor: '#1a1a3e', padding: { x: 20, y: 6 } }).setOrigin(0.5).setInteractive();
-        retry.on('pointerdown', () => {
-            this.score = 0;
-            this.loadLevel(this.level - 1);
+        showLeaderboardUI(this, 'platformer-quest', this.score, {
+            onRestart: () => {
+                this.score = 0;
+                this.loadLevel(this.level - 1);
+            },
         });
     }
 
