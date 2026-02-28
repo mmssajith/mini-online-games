@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
+  base: '/mini-online-games/',
   build: {
     rollupOptions: {
       input: {
